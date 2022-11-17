@@ -31,7 +31,7 @@ func start() error {
 		return err
 	}
 
-	log := logruslog.DefaultLogger(cfg.Debug)
+	log := logruslog.DefaultLogger(cfg)
 
 	p := store.New(cfg, log)
 

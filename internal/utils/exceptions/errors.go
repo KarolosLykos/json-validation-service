@@ -14,4 +14,9 @@ var (
 	ErrInternalServerError  = errors.New("internal server error")
 	ErrNotFound             = errors.New("not found")
 	ErrValidation           = errors.New("error validating the given json data, against the json-schema")
+	ErrAlreadyExists        = errors.New("already exists")
+
+	ErrCreateSchema   = errors.New("could not create schema")
+	ErrDownloadSchema = errors.New("could not download schema")
+	ErrValidateSchema = errors.New("could not validate schema")
 )

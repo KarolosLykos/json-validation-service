@@ -5,9 +5,14 @@ import (
 )
 
 type Config struct {
-	Debug   bool `envconfig:"DEBUG" default:"true"`
+	Logger  Logger
 	HTTP    HTTP
 	Storage Storage
+}
+
+type Logger struct {
+	Format string `envconfig:"LOGGER_FORMAT" default:"json"`
+	Level  string `envconfig:"LOGGER_LEVEL" default:"debug"`
 }
 
 type HTTP struct {

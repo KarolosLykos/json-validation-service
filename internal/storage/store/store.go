@@ -46,10 +46,6 @@ func (s *store) Connect(ctx context.Context) (storage.Storage, error) {
 		return nil, fmt.Errorf("%v:%w", exceptions.ErrConnectingToDatabase, err)
 	}
 
-	if s.cfg.Debug {
-		db = db.Debug()
-	}
-
 	s.db = db
 
 	return s, nil

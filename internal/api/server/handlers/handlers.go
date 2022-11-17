@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -67,8 +66,6 @@ func (h *Handler) Download() http.HandlerFunc {
 		vars := mux.Vars(r)
 		schemaID := vars["schemaID"]
 
-		fmt.Println(schemaID)
-
 		s, err := h.srv.DownloadSchema(ctx, schemaID)
 		if err != nil {
 			responseError(w, "downloadSchema", schemaID, err)
@@ -108,8 +105,16 @@ func (h *Handler) Validate() http.HandlerFunc {
 func responseError(w http.ResponseWriter, action, schemaID string, errMsg error) {
 	statusCode := http.StatusInternalServerError
 
-	if errors.Is(errMsg, exceptions.ErrInvalidJSON) || errors.Is(errMsg, exceptions.ErrNotFound) {
+	switch {
+	case oneOf(errMsg,
+		io.EOF,
+		exceptions.ErrInvalidJSON,
+		exceptions.ErrNotFound,
+		exceptions.ErrValidation,
+	):
 		statusCode = http.StatusBadRequest
+	case oneOf(errMsg, exceptions.ErrAlreadyExists):
+		statusCode = http.StatusConflict
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -156,4 +161,14 @@ func responseSuccess(w http.ResponseWriter, statusCode int, action, schemaID str
 	if err != nil {
 		http.Error(w, exceptions.ErrInternalServerError.Error(), http.StatusInternalServerError)
 	}
+}
+
+func oneOf(err error, errs ...error) bool {
+	for _, errr := range errs {
+		if errors.Is(err, errr) {
+			return true
+		}
+	}
+
+	return false
 }

@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/lib/pq"
 	"github.com/santhosh-tekuri/jsonschema"
 	"gorm.io/gorm"
 
@@ -38,7 +39,15 @@ func (v *Validator) UploadSchema(ctx context.Context, schemaID, schema string) e
 		return exceptions.ErrInvalidJSON
 	}
 
-	return v.db.CreateSchema(ctx, schemaID, schema)
+	if err := v.db.CreateSchema(ctx, schemaID, schema); err != nil {
+		if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
+			return fmt.Errorf("%w:%v", exceptions.ErrAlreadyExists, err)
+		}
+
+		return fmt.Errorf("%w:%v", exceptions.ErrCreateSchema, err)
+	}
+
+	return nil
 }
 
 func (v *Validator) DownloadSchema(ctx context.Context, schemaID string) (string, error) {
@@ -50,7 +59,7 @@ func (v *Validator) DownloadSchema(ctx context.Context, schemaID string) (string
 			return "", exceptions.ErrNotFound
 		}
 
-		return "", err
+		return "", fmt.Errorf("%w:%v", exceptions.ErrDownloadSchema, err)
 	}
 
 	return s, nil
@@ -61,10 +70,7 @@ func (v *Validator) ValidateSchema(ctx context.Context, schemaID string, payload
 
 	removeNulls(payload)
 
-	payloadB, err := json.Marshal(payload)
-	if err != nil {
-		return err
-	}
+	payloadB, _ := json.Marshal(payload)
 
 	s, err := v.db.GetSchema(ctx, schemaID)
 	if err != nil {
@@ -74,7 +80,7 @@ func (v *Validator) ValidateSchema(ctx context.Context, schemaID string, payload
 	compiler := jsonschema.NewCompiler()
 
 	if err = compiler.AddResource(schemaID, strings.NewReader(s)); err != nil {
-		return err
+		return fmt.Errorf("%w:%v", exceptions.ErrValidateSchema, err)
 	}
 
 	schema, err := compiler.Compile(schemaID)
@@ -98,7 +104,6 @@ func removeNulls(m map[string]interface{}) {
 			delete(m, e.String())
 			continue
 		}
-
 		//nolint:gocritic // type switch
 		switch t := v.Interface().(type) {
 		// If key is a JSON object (Go Map), use recursion to go deeper

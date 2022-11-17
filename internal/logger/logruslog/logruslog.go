@@ -3,9 +3,11 @@ package logruslog
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/KarolosLykos/json-validation-service/internal/config"
 	"github.com/KarolosLykos/json-validation-service/internal/logger"
 )
 
@@ -39,14 +41,30 @@ func New(l *logrus.Logger) logger.Logger {
 	}
 }
 
-func DefaultLogger(debug bool) logger.Logger {
-	if debug {
-		return New(defaultLogger)
-	}
-
-	defaultLogger.Level = logrus.InfoLevel
+func DefaultLogger(cfg *config.Config) logger.Logger {
+	log := defaultLogger
+	log.SetFormatter(setFormatter(cfg.Logger.Format))
+	log.SetLevel(setLevel(cfg.Logger.Level))
 
 	return New(defaultLogger)
+}
+
+func setFormatter(format string) logrus.Formatter {
+	switch strings.ToLower(format) {
+	case "json":
+		return &logrus.JSONFormatter{}
+	default:
+		return &logrus.TextFormatter{}
+	}
+}
+
+func setLevel(lvl string) logrus.Level {
+	level, err := logrus.ParseLevel(lvl)
+	if err != nil {
+		return logrus.InfoLevel
+	}
+
+	return level
 }
 
 func (l *logruslog) Panic(ctx context.Context, err error, messages ...interface{}) {
