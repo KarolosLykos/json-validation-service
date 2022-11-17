@@ -6,7 +6,7 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/pkg/errors v0.8.1
+	github.com/santhosh-tekuri/jsonschema v1.2.4
 	github.com/sirupsen/logrus v1.9.0
 	gorm.io/datatypes v1.0.7
 	gorm.io/driver/postgres v1.4.5

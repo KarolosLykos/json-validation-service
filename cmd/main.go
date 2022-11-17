@@ -11,8 +11,9 @@ import (
 	"github.com/KarolosLykos/json-validation-service/internal/api/server"
 	"github.com/KarolosLykos/json-validation-service/internal/config"
 	"github.com/KarolosLykos/json-validation-service/internal/logger/logruslog"
+	"github.com/KarolosLykos/json-validation-service/internal/service/validator"
 	"github.com/KarolosLykos/json-validation-service/internal/storage"
-	"github.com/KarolosLykos/json-validation-service/internal/storage/postgres"
+	"github.com/KarolosLykos/json-validation-service/internal/storage/schemarepo"
 )
 
 func main() {
@@ -32,7 +33,7 @@ func start() error {
 
 	log := logruslog.DefaultLogger(cfg.Debug)
 
-	p := postgres.New(cfg, log)
+	p := schemarepo.New(cfg, log)
 
 	db, err := p.Connect(ctx)
 	if err != nil {
@@ -43,10 +44,12 @@ func start() error {
 		return err
 	}
 
+	srv := validator.New(log, db)
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGQUIT, syscall.SIGTERM)
 
-	s := server.New(ctx, cfg, log, db)
+	s := server.New(ctx, cfg, log, srv)
 	s.Start(ctx)
 
 	event := <-quit

@@ -13,7 +13,7 @@ import (
 	"github.com/KarolosLykos/json-validation-service/internal/api/server/routes"
 	"github.com/KarolosLykos/json-validation-service/internal/config"
 	"github.com/KarolosLykos/json-validation-service/internal/logger"
-	"github.com/KarolosLykos/json-validation-service/internal/storage"
+	"github.com/KarolosLykos/json-validation-service/internal/service"
 )
 
 type server struct {
@@ -23,7 +23,7 @@ type server struct {
 	handler http.Handler
 }
 
-func New(ctx context.Context, cfg *config.Config, log logger.Logger, db storage.Storage) api.API {
+func New(ctx context.Context, cfg *config.Config, log logger.Logger, srv service.Service) api.API {
 	log.Debug(ctx, "create new server")
 
 	corsOptions := []handlers.CORSOption{
@@ -31,7 +31,7 @@ func New(ctx context.Context, cfg *config.Config, log logger.Logger, db storage.
 		handlers.AllowedHeaders([]string{"content-type"}),
 	}
 
-	router := routes.SetupRoutes(ctx, log, db)
+	router := routes.SetupRoutes(ctx, log, srv)
 
 	handler := handlers.CORS(corsOptions...)(router)
 

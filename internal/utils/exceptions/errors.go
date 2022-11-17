@@ -10,7 +10,8 @@ var (
 	ErrGetDB                = errors.New("could not get database")
 	ErrCloseDB              = errors.New("could not close database connection")
 	ErrInitializeDatabase   = errors.New("could not initialize database")
-	// ErrInvalidJson = errors.New("invalid json").
-	// ErrBadRequest  = errors.New("bad request").
-	// ErrNotFound    = errors.New("not found").
+	ErrInvalidJSON          = errors.New("invalid json")
+	ErrInternalServerError  = errors.New("internal server error")
+	ErrNotFound             = errors.New("not found")
+	ErrValidation           = errors.New("error validating the given json data, against the json-schema")
 )
