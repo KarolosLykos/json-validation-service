@@ -26,4 +26,4 @@ lint:
 	golangci-lint run -c .golangci.yml
 
 test:
-	go test ./... -v -cover
+	LOGGER_LEVEL=error go test ./... -v -cover
