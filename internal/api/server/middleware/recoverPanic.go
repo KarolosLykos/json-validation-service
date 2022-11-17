@@ -1,14 +1,12 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/KarolosLykos/json-validation-service/internal/logger"
+	"github.com/KarolosLykos/json-validation-service/internal/utils/exceptions"
 )
-
-var ErrRecover = errors.New("recovering from error")
 
 type Middleware struct {
 	log logger.Logger
@@ -27,7 +25,7 @@ func (m *Middleware) RecoverPanic(next http.Handler) http.Handler {
 
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error(ctx, fmt.Errorf("%w: %v", ErrRecover, err), "middleware recovering from panic error")
+				m.log.Error(ctx, fmt.Errorf("%w: %v", exceptions.ErrRecover, err), "middleware recovering from panic error")
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 			}
 		}()

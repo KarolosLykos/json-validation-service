@@ -45,7 +45,7 @@ func DefaultLogger(debug bool) logger.Logger {
 	}
 
 	defaultLogger.Level = logrus.InfoLevel
-	
+
 	return New(defaultLogger)
 }
 
