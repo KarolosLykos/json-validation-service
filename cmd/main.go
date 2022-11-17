@@ -13,7 +13,7 @@ import (
 	"github.com/KarolosLykos/json-validation-service/internal/logger/logruslog"
 	"github.com/KarolosLykos/json-validation-service/internal/service/validator"
 	"github.com/KarolosLykos/json-validation-service/internal/storage"
-	"github.com/KarolosLykos/json-validation-service/internal/storage/schemarepo"
+	"github.com/KarolosLykos/json-validation-service/internal/storage/store"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func start() error {
 
 	log := logruslog.DefaultLogger(cfg.Debug)
 
-	p := schemarepo.New(cfg, log)
+	p := store.New(cfg, log)
 
 	db, err := p.Connect(ctx)
 	if err != nil {
