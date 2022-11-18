@@ -117,3 +117,7 @@ curl -X POST http://localhost:8082/validate/config-schema -d @testdata/config.js
 
 {"action":"validateSchema","id":"config-schema","status":"success"}
 ```
+
+## Extras
+- Basic unit test on `Upload, Download and Validate handlers` and `validator service`
+- Added `Github actions` for linting, testing and building the service.
