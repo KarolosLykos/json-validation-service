@@ -21,6 +21,6 @@ jobs:
       - name: Test
         run: go test -coverprofile="coverage.txt" -covermode=atomic -p 1 ./...
 
-      - name: Upload coverage to Codecov
-        if: success() && matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v3.1.1
+      - name: Upload coverage reports to Codecov with GitHub Action
+        if: success()
+        uses: codecov/codecov-action@v3
