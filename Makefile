@@ -27,3 +27,9 @@ lint:
 
 test:
 	LOGGER_LEVEL=error go test ./... -v -cover
+
+local-up:
+	docker compose up -d
+
+local-down:
+	docker compose down

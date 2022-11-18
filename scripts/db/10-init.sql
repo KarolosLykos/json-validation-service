@@ -1,0 +1,1 @@
+CREATE DATABASE "json-validation-service" OWNER postgres;
