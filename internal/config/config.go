@@ -31,7 +31,7 @@ type Storage struct {
 func Load() (*Config, error) {
 	cfg := &Config{}
 
-	if err := envconfig.Process("JSON_VALIDATION_SERVICE", cfg); err != nil {
+	if err := envconfig.Process("", cfg); err != nil {
 		return nil, err
 	}
 
