@@ -6,7 +6,7 @@
 <p align="center">
 
 <a style="text-decoration: none" href="https://github.com/KarolosLykos/json-validation-service/actions?query=workflow%3ABuild+branch%3Amain">
-<img src="https://img.shields.io/github/workflow/status/KarolosLykos/json-validation-service/Build?style=flat-square" alt="Build Status">
+<img src="https://img.shields.io/github/actions/workflow/status/KarolosLykos/json-validation-service/build.yml?style=flat-square" alt="Build Status">
 </a>
 
 <a style="text-decoration: none" href="go.mod">
